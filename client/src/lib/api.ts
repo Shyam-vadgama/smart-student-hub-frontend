@@ -2,13 +2,22 @@ import { apiRequest } from "./queryClient";
 
 // Achievement API
 export const achievementApi = {
-  getAll: (status?: string) => {
+  getAll: async (status?: string) => {
     const url = status ? `/api/achievements?status=${status}` : '/api/achievements';
-    return fetch(url, { credentials: 'include' }).then(res => res.json());
+    const res = await fetch(url, { credentials: 'include' });
+    if (!res.ok) {
+      // Return empty array for failed requests instead of throwing
+      return [];
+    }
+    return res.json();
   },
   
-  getById: (id: string) => {
-    return fetch(`/api/achievements/${id}`, { credentials: 'include' }).then(res => res.json());
+  getById: async (id: string) => {
+    const res = await fetch(`/api/achievements/${id}`, { credentials: 'include' });
+    if (!res.ok) {
+      throw new Error('Failed to fetch achievement');
+    }
+    return res.json();
   },
   
   create: async (data: FormData) => {
@@ -64,15 +73,23 @@ export const formsApi = {
 
 // Analytics API
 export const analyticsApi = {
-  get: () => {
-    return fetch('/api/analytics', { credentials: 'include' }).then(res => res.json());
+  get: async () => {
+    const res = await fetch('/api/analytics', { credentials: 'include' });
+    if (!res.ok) {
+      throw new Error('Failed to fetch analytics');
+    }
+    return res.json();
   }
 };
 
 // Profile API
 export const profileApi = {
-  get: () => {
-    return fetch('/api/profile', { credentials: 'include' }).then(res => res.json());
+  get: async () => {
+    const res = await fetch('/api/profile', { credentials: 'include' });
+    if (!res.ok) {
+      throw new Error('Failed to fetch profile');
+    }
+    return res.json();
   },
   
   update: async (data: any) => {

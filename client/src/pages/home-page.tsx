@@ -84,10 +84,12 @@ export default function HomePage() {
 
   const getStats = () => {
     if (user.role === 'student') {
-      const total = achievements.length;
-      const approved = achievements.filter((a: any) => a.status === 'approved').length;
-      const pending = achievements.filter((a: any) => a.status === 'pending').length;
-      const thisMonth = achievements.filter((a: any) => {
+      // Ensure achievements is always an array
+      const achievementsArray = Array.isArray(achievements) ? achievements : [];
+      const total = achievementsArray.length;
+      const approved = achievementsArray.filter((a: any) => a.status === 'approved').length;
+      const pending = achievementsArray.filter((a: any) => a.status === 'pending').length;
+      const thisMonth = achievementsArray.filter((a: any) => {
         const achievementDate = new Date(a.createdAt);
         const now = new Date();
         return achievementDate.getMonth() === now.getMonth() && 
@@ -110,7 +112,8 @@ export default function HomePage() {
   };
 
   const stats = getStats();
-  const recentAchievements = achievements.slice(0, 3);
+  const achievementsArray = Array.isArray(achievements) ? achievements : [];
+  const recentAchievements = achievementsArray.slice(0, 3);
 
   return (
     <div className="flex h-screen bg-background">

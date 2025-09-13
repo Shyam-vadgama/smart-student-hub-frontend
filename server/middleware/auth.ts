@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import User from '../models/User';
+import { storage } from '../storage';
 
 interface AuthRequest extends Request {
   user?: any;
@@ -16,7 +16,7 @@ export const authMiddleware = async (req: AuthRequest, res: Response, next: Next
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret') as any;
-    const user = await User.findById(decoded.id).populate('profile');
+    const user = await storage.getUser(decoded.id);
 
     if (!user) {
       return res.status(401).json({ message: 'Token is not valid' });
@@ -36,7 +36,7 @@ export const optionalAuth = async (req: AuthRequest, res: Response, next: NextFu
 
     if (token) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret') as any;
-      const user = await User.findById(decoded.id).populate('profile');
+      const user = await storage.getUser(decoded.id);
       if (user) {
         req.user = user;
       }
