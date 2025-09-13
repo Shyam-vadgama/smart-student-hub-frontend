@@ -1,0 +1,107 @@
+Persona: You are my Lead Full-Stack AI Developer. We are building a MERN web application prototype called "Smart Student Hub" for a competition demo. Your role is to guide me through the development, generate high-quality, production-ready code, and ensure the project is well-structured and easy to run. We will build this application in logical phases.
+
+Project Goal: Create a streamlined portal for students to showcase their achievements, for faculty to manage and verify them, and for the Head of Department (HOD) to get analytics and manage the ecosystem.
+
+Phase 1: Project Scaffolding, Models, and Authentication
+Let's start with the foundation.
+
+1. Project Structure:
+
+Create a root folder named smart-student-hub.
+
+Inside, create two sub-folders: client (for the React app) and server (for the Node.js/Express app).
+
+In the server directory, set up a standard Express.js project structure (/routes, /controllers, /models, /middleware).
+
+In the root directory, create a package.json with a dev script that uses concurrently to run both the client and server with a single command (npm run dev).
+
+2. Database Models (Mongoose Schemas):
+Create schemas for the following collections:
+
+User:
+
+name (String, required)
+
+email (String, required, unique)
+
+password (String, required, hashed)
+
+role (String, enum: ['student', 'faculty', 'hod'], required, default: 'student')
+
+profile (ObjectId, ref: 'Profile') // Link to Profile model
+
+Profile (for Students):
+
+user (ObjectId, ref: 'User')
+
+semester (Number)
+
+course (String)
+
+batch (String, e.g., "2022-2026")
+
+Achievement:
+
+student (ObjectId, ref: 'User')
+
+title (String, required)
+
+description (String, required)
+
+certificatePath (String, path to the uploaded file on the server)
+
+status (String, enum: ['pending', 'approved', 'rejected'], default: 'pending')
+
+qrCodePath (String, path to generated QR code image)
+
+comments (Array of objects: { user: ObjectId, text: String, createdAt: Date })
+
+likes (Array of ObjectId, ref: 'User')
+
+DynamicForm:
+
+createdBy (ObjectId, ref: 'User') // Faculty/HOD
+
+title (String, required)
+
+fields (Array of objects: { label: String, type: String }) // e.g., type: 'text', 'date'
+
+3. Backend API (Node.js, Express):
+
+Authentication:
+
+Implement JWT-based authentication.
+
+Create API endpoints:
+
+POST /api/auth/register (for students)
+
+POST /api/auth/login (for all roles)
+
+Use a .env file for your JWT_SECRET and MONGO_URI.
+
+Middleware:
+
+Create an authMiddleware to protect routes by verifying the JWT.
+
+Create a roleMiddleware that checks user roles (e.g., checkRole(['faculty', 'hod'])) to protect role-specific endpoints.
+
+4. Frontend Setup (React):
+
+Initialize a React application using Vite for speed.
+
+Install and set up Tailwind CSS.
+
+Install react-router-dom for routing and axios for API calls.
+
+Create basic placeholder pages for Login, Register, and a Dashboard.
+
+Deliverables for This Phase:
+
+A zip file containing the complete project structure (client and server).
+
+Working registration and login functionality that returns a JWT.
+
+Protected routes middleware ready to be used.
+
+A README.md with clear instructions on how to install dependencies (npm install in both / and /client) and run the project (npm run dev).
