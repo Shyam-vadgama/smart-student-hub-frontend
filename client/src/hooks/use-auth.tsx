@@ -51,11 +51,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!res.ok) {
           throw new Error("Failed to fetch user");
         }
-        return await res.json();
+        const userData = await res.json();
+        // Ensure we have all required user properties
+        if (userData && userData._id && userData.email && userData.role) {
+          return userData;
+        }
+        return null;
       } catch (error) {
+        console.error("Error fetching user:", error);
         return null;
       }
     },
+    retry: false,
+    refetchOnWindowFocus: false,
   });
 
   const loginMutation = useMutation({
@@ -73,7 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     onError: (error: Error) => {
       toast({
         title: "Login failed",
-        description: error.message,
+        description: error.message || "Invalid email or password",
         variant: "destructive",
       });
     },
@@ -94,7 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     onError: (error: Error) => {
       toast({
         title: "Registration failed",
-        description: error.message,
+        description: error.message || "Failed to create account",
         variant: "destructive",
       });
     },
@@ -113,10 +121,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
     },
     onError: (error: Error) => {
+      // Even if the logout API call fails, clear the local data
+      queryClient.setQueryData(["/api/user"], null);
+      queryClient.clear();
       toast({
-        title: "Logout failed",
-        description: error.message,
-        variant: "destructive",
+        title: "Logged out",
+        description: "You have been logged out successfully.",
       });
     },
   });

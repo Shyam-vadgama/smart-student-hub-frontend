@@ -35,6 +35,16 @@ export interface Achievement {
     createdAt: Date;
   }>;
   likes: string[];
+  // Add category and type fields
+  category?: string;
+  type?: string;
+  // Add media attachments
+  media?: Array<{
+    url: string;
+    publicId: string;
+    type: 'image' | 'video';
+    caption?: string;
+  }>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -56,6 +66,11 @@ export interface DynamicForm {
     data: Record<string, any>;
     submittedAt: Date;
   }>;
+  // Add visibility dates (as strings since they come from the frontend as ISO strings)
+  visibleFrom?: string;
+  visibleUntil?: string;
+  // Add saved date field
+  savedDate?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -80,6 +95,16 @@ export interface InsertAchievement {
   title: string;
   description: string;
   certificatePath?: string;
+  // Add category and type fields
+  category?: string;
+  type?: string;
+  // Add media attachments
+  media?: Array<{
+    url: string;
+    publicId: string;
+    type: 'image' | 'video';
+    caption?: string;
+  }>;
 }
 
 export interface InsertDynamicForm {
@@ -92,4 +117,22 @@ export interface InsertDynamicForm {
     required?: boolean;
     options?: string[];
   }>;
+  // Add visibility dates (as strings since they come from the frontend as ISO strings)
+  visibleFrom?: string;
+  visibleUntil?: string;
+  // Add saved date field
+  savedDate?: string;
+}
+
+// Add Follow interface
+export interface Follow {
+  _id: string;
+  follower: string; // The user who is following
+  following: string; // The user being followed
+  createdAt: Date;
+}
+
+export interface InsertFollow {
+  follower: string;
+  following: string;
 }

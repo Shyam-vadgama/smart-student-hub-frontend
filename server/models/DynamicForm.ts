@@ -5,8 +5,7 @@ export interface DynamicFormDocument extends Omit<DynamicForm, '_id'>, Document 
 
 const dynamicFormSchema = new Schema<DynamicFormDocument>({
   createdBy: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
+    type: String,
     required: true
   },
   title: {
@@ -43,6 +42,18 @@ const dynamicFormSchema = new Schema<DynamicFormDocument>({
     enum: ['active', 'inactive'],
     default: 'active'
   },
+  visibleFrom: {
+    type: Date,
+    required: false
+  },
+  visibleUntil: {
+    type: Date,
+    required: false
+  },
+  savedDate: {
+    type: Date,
+    required: false
+  },
   submissions: [{
     student: {
       type: Schema.Types.ObjectId,
@@ -64,5 +75,8 @@ const dynamicFormSchema = new Schema<DynamicFormDocument>({
 
 dynamicFormSchema.index({ createdBy: 1 });
 dynamicFormSchema.index({ status: 1 });
+dynamicFormSchema.index({ visibleFrom: 1 });
+dynamicFormSchema.index({ visibleUntil: 1 });
+dynamicFormSchema.index({ savedDate: 1 });
 
 export default mongoose.model<DynamicFormDocument>('DynamicForm', dynamicFormSchema);

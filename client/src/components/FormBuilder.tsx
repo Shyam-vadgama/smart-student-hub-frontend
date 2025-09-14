@@ -7,7 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Trash2, Move } from "lucide-react";
+import { Plus, Trash2, Move, Calendar, CalendarIcon } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { format } from "date-fns";
 import { formsApi } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
@@ -27,10 +30,20 @@ interface FormBuilderProps {
 
 export default function FormBuilder({ onClose, form }: FormBuilderProps) {
   const { toast } = useToast();
+  
+  // Helper function to parse date from string or Date object
+  const parseDate = (date: string | Date | undefined): Date | undefined => {
+    if (!date) return undefined;
+    const d = new Date(date);
+    return isNaN(d.getTime()) ? undefined : d;
+  };
+
   const [formData, setFormData] = useState({
     title: form?.title || "",
     description: form?.description || "",
-    fields: form?.fields || []
+    fields: form?.fields || [],
+    visibleFrom: parseDate(form?.visibleFrom),
+    visibleUntil: parseDate(form?.visibleUntil)
   });
 
   const [newField, setNewField] = useState<FormField>({
@@ -107,14 +120,30 @@ export default function FormBuilder({ onClose, form }: FormBuilderProps) {
     }
 
     try {
+      // Prepare form data with visibility dates
+      const formPayload: any = {
+        ...formData,
+        fields: formData.fields.map(({ id, ...rest }: FormField) => rest)
+      };
+
+      // Only include visibleFrom if it has a value
+      if (formData.visibleFrom) {
+        formPayload.visibleFrom = formData.visibleFrom.toISOString();
+      }
+
+      // Only include visibleUntil if it has a value
+      if (formData.visibleUntil) {
+        formPayload.visibleUntil = formData.visibleUntil.toISOString();
+      }
+
       if (form) {
-        await formsApi.update(form._id, formData);
+        await formsApi.update(form._id, formPayload);
         toast({
           title: "Form updated",
           description: "The form has been updated successfully"
         });
       } else {
-        await formsApi.create(formData);
+        await formsApi.create(formPayload);
         toast({
           title: "Form created",
           description: "The form has been created successfully"
@@ -123,10 +152,10 @@ export default function FormBuilder({ onClose, form }: FormBuilderProps) {
 
       queryClient.invalidateQueries({ queryKey: ["/api/forms"] });
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Save failed",
-        description: "Failed to save the form. Please try again.",
+        description: error.message || "Failed to save the form. Please try again.",
         variant: "destructive"
       });
     }
@@ -168,6 +197,56 @@ export default function FormBuilder({ onClose, form }: FormBuilderProps) {
                     placeholder="Enter form description"
                     data-testid="textarea-form-description"
                   />
+                </div>
+                
+                {/* Visibility Dates */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Visible From</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start text-left font-normal"
+                          data-testid="button-visible-from"
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {formData.visibleFrom ? format(formData.visibleFrom, "PPP") : "Pick a date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <CalendarComponent
+                          mode="single"
+                          selected={formData.visibleFrom}
+                          onSelect={(date) => setFormData(prev => ({ ...prev, visibleFrom: date }))}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div>
+                    <Label>Visible Until</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start text-left font-normal"
+                          data-testid="button-visible-until"
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {formData.visibleUntil ? format(formData.visibleUntil, "PPP") : "Pick a date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <CalendarComponent
+                          mode="single"
+                          selected={formData.visibleUntil}
+                          onSelect={(date) => setFormData(prev => ({ ...prev, visibleUntil: date }))}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -257,6 +336,25 @@ export default function FormBuilder({ onClose, form }: FormBuilderProps) {
                       <p className="text-muted-foreground text-sm" data-testid="preview-form-description">
                         {formData.description}
                       </p>
+                    )}
+                    
+                    {/* Visibility Info Preview */}
+                    {(formData.visibleFrom || formData.visibleUntil) && (
+                      <div className="mt-2 text-sm text-muted-foreground">
+                        {formData.visibleFrom && (
+                          <p>Visible from: {format(formData.visibleFrom, "PPP")}</p>
+                        )}
+                        {formData.visibleUntil && (
+                          <p>Visible until: {format(formData.visibleUntil, "PPP")}</p>
+                        )}
+                      </div>
+                    )}
+                    
+                    {/* Saved Date Info Preview */}
+                    {form && form.savedDate && (
+                      <div className="mt-2 text-sm text-muted-foreground">
+                        <p>Saved: {new Date(form.savedDate).toLocaleDateString()}</p>
+                      </div>
                     )}
                   </div>
 

@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Trophy, Clock, CheckCircle, Heart, MessageCircle, QrCode } from "lucide-react";
+import { Trophy, Clock, CheckCircle, Heart, MessageCircle, QrCode, Tag, Award, Play } from "lucide-react";
 import { Achievement } from "@shared/schema";
+import MediaPreview from "@/components/MediaPreview";
 
 interface AchievementCardProps {
   achievement: Achievement;
@@ -17,6 +19,9 @@ export default function AchievementCard({
   onApprove, 
   onReject 
 }: AchievementCardProps) {
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewIndex, setPreviewIndex] = useState(0);
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'approved':
@@ -39,6 +44,11 @@ export default function AchievementCard({
       default:
         return 'outline' as const;
     }
+  };
+
+  const handleMediaClick = (index: number) => {
+    setPreviewIndex(index);
+    setPreviewOpen(true);
   };
 
   return (
@@ -66,6 +76,59 @@ export default function AchievementCard({
         <p className="text-muted-foreground text-sm mb-4" data-testid="achievement-description">
           {achievement.description}
         </p>
+
+        {/* Category and Type Badges */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {achievement.category && (
+            <Badge variant="outline" className="flex items-center gap-1">
+              <Tag className="h-3 w-3" />
+              {achievement.category}
+            </Badge>
+          )}
+          {achievement.type && (
+            <Badge variant="outline" className="flex items-center gap-1">
+              <Award className="h-3 w-3" />
+              {achievement.type}
+            </Badge>
+          )}
+        </div>
+
+        {/* Media Gallery */}
+        {achievement.media && achievement.media.length > 0 && (
+          <div className="mb-4">
+            <div className="media-grid">
+              {achievement.media.slice(0, 4).map((media, index) => (
+                <div 
+                  key={index} 
+                  className="media-item relative group cursor-pointer"
+                  onClick={() => handleMediaClick(index)}
+                >
+                  {media.type === 'image' ? (
+                    <img
+                      src={media.url}
+                      alt={`Media ${index}`}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-700">
+                      <Play className="h-6 w-6 text-gray-600 dark:text-gray-300" />
+                    </div>
+                  )}
+                  {media.caption && (
+                    <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs p-1 truncate">
+                      {media.caption}
+                    </div>
+                  )}
+                </div>
+              ))}
+              {achievement.media.length > 4 && (
+                <div className="media-item flex items-center justify-center bg-gray-100 dark:bg-gray-700">
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-300">+{achievement.media.length - 4} more</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         <div className="flex items-center justify-between pt-4 border-t border-border">
           <div className="flex items-center space-x-4 text-sm text-muted-foreground">
@@ -123,6 +186,15 @@ export default function AchievementCard({
             )}
           </div>
         </div>
+        
+        {achievement.media && (
+          <MediaPreview
+            media={achievement.media}
+            initialIndex={previewIndex}
+            open={previewOpen}
+            onOpenChange={setPreviewOpen}
+          />
+        )}
       </CardContent>
     </Card>
   );

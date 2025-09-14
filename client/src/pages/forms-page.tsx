@@ -4,22 +4,34 @@ import { useQuery } from "@tanstack/react-query";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import FormBuilder from "@/components/FormBuilder";
+import FormSubmissionsView from "@/components/FormSubmissionsView";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formsApi } from "@/lib/api";
-import { Plus, Edit, Trash2, Eye, Users } from "lucide-react";
+import { Plus, Edit, Trash2, Eye, Users, Calendar } from "lucide-react";
 
 export default function FormsPage() {
   const { user } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showFormBuilder, setShowFormBuilder] = useState(false);
+  const [editingForm, setEditingForm] = useState<any>(null);
+  const [viewingSubmissions, setViewingSubmissions] = useState<string | null>(null);
 
-  const { data: forms = [], isLoading } = useQuery({
+  const { data: forms = [], isLoading, refetch } = useQuery({
     queryKey: ["/api/forms"],
     queryFn: () => formsApi.getAll(),
     enabled: !!user
   });
+
+  const handleEditForm = (form: any) => {
+    setEditingForm(form);
+    setShowFormBuilder(true);
+  };
+
+  const handleViewSubmissions = (formId: string) => {
+    setViewingSubmissions(formId);
+  };
 
   if (!user || !['faculty', 'hod'].includes(user.role)) {
     return null;
@@ -74,6 +86,7 @@ export default function FormsPage() {
                         <Button
                           variant="ghost"
                           size="sm"
+                          onClick={() => handleEditForm(form)}
                           data-testid="button-edit-form"
                         >
                           <Edit className="h-4 w-4" />
@@ -99,12 +112,40 @@ export default function FormsPage() {
                           {new Date(form.createdAt).toLocaleDateString()}
                         </span>
                       </div>
+                      {form.savedDate && (
+                        <div className="text-sm text-muted-foreground">
+                          <span className="font-medium">Saved:</span>{" "}
+                          <span data-testid="form-saved-date">
+                            {new Date(form.savedDate).toLocaleDateString()}
+                          </span>
+                        </div>
+                      )}
                       <div className="text-sm text-muted-foreground">
                         <span className="font-medium">Submissions:</span>{" "}
                         <span data-testid="form-submissions-count">
                           {form.submissions?.length || 0}
                         </span>
                       </div>
+                      
+                      {/* Visibility Dates */}
+                      {(form.visibleFrom || form.visibleUntil) && (
+                        <div className="pt-2 border-t border-border">
+                          <div className="flex items-center text-sm text-muted-foreground">
+                            <Calendar className="h-4 w-4 mr-2" />
+                            <span className="font-medium">Visibility:</span>
+                          </div>
+                          {form.visibleFrom && (
+                            <div className="text-xs text-muted-foreground ml-6">
+                              From: {new Date(form.visibleFrom).toLocaleDateString()}
+                            </div>
+                          )}
+                          {form.visibleUntil && (
+                            <div className="text-xs text-muted-foreground ml-6">
+                              Until: {new Date(form.visibleUntil).toLocaleDateString()}
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex justify-between items-center pt-4 border-t border-border">
@@ -126,6 +167,7 @@ export default function FormsPage() {
                         <Button 
                           size="sm" 
                           variant="outline"
+                          onClick={() => handleViewSubmissions(form._id)}
                           data-testid="button-view-submissions"
                         >
                           <Users className="h-4 w-4 mr-1" />
@@ -160,7 +202,22 @@ export default function FormsPage() {
 
           {/* Form Builder Modal */}
           {showFormBuilder && (
-            <FormBuilder onClose={() => setShowFormBuilder(false)} />
+            <FormBuilder 
+              onClose={() => {
+                setShowFormBuilder(false);
+                setEditingForm(null);
+                refetch(); // Refresh the forms list after creating/editing
+              }} 
+              form={editingForm}
+            />
+          )}
+
+          {/* Form Submissions View */}
+          {viewingSubmissions && (
+            <FormSubmissionsView 
+              formId={viewingSubmissions} 
+              onClose={() => setViewingSubmissions(null)} 
+            />
           )}
         </main>
       </div>

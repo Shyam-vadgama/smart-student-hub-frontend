@@ -2,8 +2,13 @@ import { apiRequest } from "./queryClient";
 
 // Achievement API
 export const achievementApi = {
-  getAll: async (status?: string) => {
-    const url = status ? `/api/achievements?status=${status}` : '/api/achievements';
+  getAll: async (status?: string, category?: string, type?: string) => {
+    const params = new URLSearchParams();
+    if (status) params.append('status', status);
+    if (category) params.append('category', category);
+    if (type) params.append('type', type);
+    
+    const url = params.toString() ? `/api/achievements?${params.toString()}` : '/api/achievements';
     const res = await fetch(url, { credentials: 'include' });
     if (!res.ok) {
       // Return empty array for failed requests instead of throwing
@@ -26,6 +31,10 @@ export const achievementApi = {
       body: data,
       credentials: 'include'
     });
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.message || 'Failed to create achievement');
+    }
     return res.json();
   },
   
@@ -68,6 +77,28 @@ export const formsApi = {
   delete: async (id: string) => {
     const res = await apiRequest('DELETE', `/api/forms/${id}`);
     return res.json();
+  },
+  
+  // Add form submission methods
+  submit: async (formId: string, data: any) => {
+    const res = await apiRequest('POST', `/api/forms/${formId}/submit`, { data });
+    return res.json();
+  },
+  
+  getSubmissions: async (formId: string) => {
+    const res = await apiRequest('GET', `/api/forms/${formId}/submissions`);
+    return res.json();
+  }
+};
+
+// Student Forms API
+export const studentFormsApi = {
+  getAll: async () => {
+    const res = await fetch('/api/student/forms', { credentials: 'include' });
+    if (!res.ok) {
+      throw new Error('Failed to fetch forms');
+    }
+    return res.json();
   }
 };
 
@@ -94,6 +125,43 @@ export const profileApi = {
   
   update: async (data: any) => {
     const res = await apiRequest('PUT', '/api/profile', data);
+    return res.json();
+  }
+};
+
+// Follow API
+export const followApi = {
+  followUser: async (userId: string) => {
+    const res = await apiRequest('POST', `/api/follow/${userId}`);
+    return res.json();
+  },
+  
+  unfollowUser: async (userId: string) => {
+    const res = await apiRequest('DELETE', `/api/follow/${userId}`);
+    return res.json();
+  },
+  
+  getFollowers: async (userId: string) => {
+    const res = await fetch(`/api/followers/${userId}`, { credentials: 'include' });
+    if (!res.ok) {
+      throw new Error('Failed to fetch followers');
+    }
+    return res.json();
+  },
+  
+  getFollowing: async (userId: string) => {
+    const res = await fetch(`/api/following/${userId}`, { credentials: 'include' });
+    if (!res.ok) {
+      throw new Error('Failed to fetch following');
+    }
+    return res.json();
+  },
+  
+  getFeed: async () => {
+    const res = await fetch('/api/feed', { credentials: 'include' });
+    if (!res.ok) {
+      throw new Error('Failed to fetch feed');
+    }
     return res.json();
   }
 };

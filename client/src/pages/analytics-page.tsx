@@ -16,6 +16,9 @@ export default function AnalyticsPage() {
   const { user } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [timeFilter, setTimeFilter] = useState("30");
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   const { data: analytics, isLoading: analyticsLoading } = useQuery({
     queryKey: ["/api/analytics"],
@@ -29,9 +32,25 @@ export default function AnalyticsPage() {
     enabled: !!user && user.role === 'hod'
   });
 
+  // Fetch filtered achievements for analytics
+  const { data: filteredAchievements = [] } = useQuery({
+    queryKey: ["/api/achievements", "analytics", categoryFilter, typeFilter, statusFilter],
+    queryFn: () => {
+      const status = statusFilter === 'all' ? undefined : statusFilter;
+      const category = categoryFilter === 'all' ? undefined : categoryFilter;
+      const type = typeFilter === 'all' ? undefined : typeFilter;
+      return achievementApi.getAll(status, category, type);
+    },
+    enabled: !!user && user.role === 'hod'
+  });
+
   if (!user || user.role !== 'hod') {
     return null;
   }
+
+  // Extract unique categories and types for filter dropdowns
+  const categories = ['all', ...Array.from(new Set(recentAchievements.map((a: any) => a.category).filter(Boolean)))];
+  const types = ['all', ...Array.from(new Set(recentAchievements.map((a: any) => a.type).filter(Boolean)))];
 
   const handleExportReport = () => {
     // Implementation for exporting analytics report
@@ -90,6 +109,72 @@ export default function AnalyticsPage() {
               <Button onClick={handleExportReport} data-testid="button-export-report">
                 <Download className="mr-2 h-4 w-4" />
                 Export Report
+              </Button>
+            </div>
+          </div>
+
+          {/* Filter Controls */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 p-4 bg-muted/30 rounded-lg">
+            <div>
+              <label className="text-sm font-medium mb-1 block">Status Filter</label>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="approved">Approved</SelectItem>
+                  <SelectItem value="rejected">Rejected</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <label className="text-sm font-medium mb-1 block">Category Filter</label>
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Categories" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {categories.filter((c): c is string => c !== 'all' && typeof c === 'string').map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <label className="text-sm font-medium mb-1 block">Type Filter</label>
+              <Select value={typeFilter} onValueChange={setTypeFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Types" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  {types.filter((t): t is string => t !== 'all' && typeof t === 'string').map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="flex items-end">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setStatusFilter('all');
+                  setCategoryFilter('all');
+                  setTypeFilter('all');
+                }}
+                className="w-full"
+              >
+                Clear Filters
               </Button>
             </div>
           </div>
@@ -192,13 +277,15 @@ export default function AnalyticsPage() {
                   <TableRow>
                     <TableHead>Activity</TableHead>
                     <TableHead>User</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Type</TableHead>
                     <TableHead>Department</TableHead>
                     <TableHead>Time</TableHead>
                     <TableHead>Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {recentAchievements.slice(0, 10).map((achievement: any, index: number) => (
+                  {filteredAchievements.slice(0, 10).map((achievement: any, index: number) => (
                     <TableRow key={achievement._id || index} data-testid={`activity-row-${index}`}>
                       <TableCell>
                         <div className="flex items-center space-x-3">
@@ -215,6 +302,24 @@ export default function AnalyticsPage() {
                       </TableCell>
                       <TableCell className="text-foreground" data-testid={`activity-user-${index}`}>
                         {achievement.student?.name || 'Unknown User'}
+                      </TableCell>
+                      <TableCell>
+                        {achievement.category ? (
+                          <Badge variant="outline" className="text-xs">
+                            {achievement.category}
+                          </Badge>
+                        ) : (
+                          <span className="text-muted-foreground text-xs">N/A</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {achievement.type ? (
+                          <Badge variant="outline" className="text-xs">
+                            {achievement.type}
+                          </Badge>
+                        ) : (
+                          <span className="text-muted-foreground text-xs">N/A</span>
+                        )}
                       </TableCell>
                       <TableCell className="text-muted-foreground" data-testid={`activity-department-${index}`}>
                         {achievement.student?.profile?.department || 'N/A'}
@@ -236,10 +341,10 @@ export default function AnalyticsPage() {
                     </TableRow>
                   ))}
                   
-                  {recentAchievements.length === 0 && (
+                  {filteredAchievements.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                        No recent activities found
+                      <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                        No activities found with current filters
                       </TableCell>
                     </TableRow>
                   )}

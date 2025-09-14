@@ -11,7 +11,9 @@ import {
   FileText, 
   BarChart3, 
   Users, 
-  LogOut 
+  LogOut,
+  Users2,
+  Code
 } from "lucide-react";
 
 interface SidebarProps {
@@ -37,6 +39,24 @@ export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
       href: "/achievements",
       icon: Trophy,
       roles: ["student"]
+    },
+    {
+      name: "Available Forms",
+      href: "/student/forms",
+      icon: FileText,
+      roles: ["student"]
+    },
+    {
+      name: "Social Feed",
+      href: "/feed",
+      icon: Users2,
+      roles: ["student"]
+    },
+    {
+      name: "Code Problems",
+      href: "/leetcode",
+      icon: Code,
+      roles: ["student", "faculty", "hod"]
     },
     {
       name: "Review Achievements",

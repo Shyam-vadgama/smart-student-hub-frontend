@@ -38,3 +38,10 @@ export const upload = multer({
   },
   fileFilter: fileFilter
 });
+
+export const formUpload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 100 * 1024 * 1024 // 100MB limit
+  }
+}).any();
