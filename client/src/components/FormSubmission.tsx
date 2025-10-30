@@ -245,18 +245,20 @@ export default function FormSubmission({ form, onClose }: FormSubmissionProps) {
             <Button variant="outline" onClick={onClose} disabled={isSubmitting}>
               Cancel
             </Button>
-            <Button 
-              onClick={handleSubmit} 
-              disabled={isSubmitting || !availability.available || alreadySubmitted}
-              variant={alreadySubmitted ? "secondary" : "default"}
-            >
-              {alreadySubmitted 
-                ? "Already Submitted" 
-                : isSubmitting 
-                  ? "Submitting..." 
-                  : "Submit Form"
-              }
-            </Button>
+            {user && user.role === 'student' && (
+              <Button
+                onClick={handleSubmit}
+                disabled={isSubmitting || !availability.available || alreadySubmitted}
+                variant={alreadySubmitted ? "secondary" : "default"}
+              >
+                {alreadySubmitted
+                  ? "Already Submitted"
+                  : isSubmitting
+                    ? "Submitting..."
+                    : "Submit Form"
+                }
+              </Button>
+            )}
           </div>
         </div>
       </DialogContent>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>John Doe - Resume</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fafafa;
+            padding: 40px 20px;
+        }
+
+        /* Container */
+        .resume-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            padding: 40px 50px;
+            background: #2c3e50;
+            color: white;
+        }
+
+        .name {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .title {
+            font-size: 1.2rem;
+            font-weight: 300;
+            color: #bdc3c7;
+            margin-bottom: 20px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            font-size: 0.95rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            transition: opacity 0.3s;
+        }
+
+        .contact-item:hover {
+            opacity: 0.8;
+        }
+
+        .contact-icon {
+            margin-right: 8px;
+            color: #bdc3c7;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 40px 50px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #2c3e50;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ecf0f1;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: #3498db;
+        }
+
+        /* Experience & Education */
+        .item {
+            margin-bottom: 30px;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .item-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .item-subtitle {
+            font-size: 1rem;
+            color: #7f8c8d;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+
+        .item-date {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            font-style: italic;
+        }
+
+        .item-description {
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        /* Skills */
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .skill {
+            background: #ecf0f1;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #2c3e50;
+            transition: all 0.3s;
+            cursor: default;
+        }
+
+        .skill:hover {
+            background: #3498db;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            padding: 20px 50px;
+            background: #f8f9fa;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header, .main-content, .footer {
+                padding: 30px;
+            }
+            
+            .name {
+                font-size: 2rem;
+            }
+            
+            .contact-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header, .main-content, .footer {
+                padding: 20px;
+            }
+            
+            .name {
+                font-size: 1.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-container">
+        <!-- Header Section -->
+        <header class="header">
+            <h1 class="name">John Doe</h1>
+            <div class="title">Senior Product Designer</div>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span class="contact-icon">📧</span>
+                    <span>johndoe@example.com</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">📱</span>
+                    <span>+1 (555) 123-4567</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">🌐</span>
+                    <span>www.johndoe.com</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">📍</span>
+                    <span>San Francisco, CA</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Summary -->
+            <section class="section">
+                <h2 class="section-title">Summary</h2>
+                <p class="item-description">
+                    Innovative product designer with 7+ years of experience creating user-centered digital experiences 
+                    for startups and enterprise clients. Passionate about solving complex problems through elegant design 
+                    solutions. Strong collaborator with cross-functional teams including engineering, marketing, and product management.
+                </p>
+            </section>
+
+            <!-- Experience -->
+            <section class="section">
+                <h2 class="section-title">Experience</h2>
+                
+                <div class="item">
+                    <div class="item-header">
+                        <h3 class="item-title">Senior Product Designer</h3>
+                        <div class="item-date">2020 - Present</div>
+                    </div>
+                    <div class="item-subtitle">TechInnovate Inc., San Francisco, CA</div>
+                    <p class="item-description">
+                        Lead design for enterprise SaaS platform serving 500+ clients. Collaborate with product managers 
+                        to define roadmap and prioritize features. Conduct user research and usability testing to inform 
+                        design decisions. Mentor junior designers and establish design system used across all company products.
+                    </p>
+                </div>
+
+                <div class="item">
+                    <div class="item-header">
+                        <h3 class="item-title">Product Designer</h3>
+                        <div class="item-date">2017 - 2020</div>
+                    </div>
+                    <div class="item-subtitle">Creative Solutions LLC, New York, NY</div>
+                    <p class="item-description">
+                        Designed mobile and web applications for clients in finance, healthcare, and e-commerce industries. 
+                        Created wireframes, prototypes, and high-fidelity designs. Worked closely with developers to ensure 
+                        pixel-perfect implementation. Increased client satisfaction by 40% through improved UX processes.
+                    </p>
+                </div>
+
+                <div class="item">
+                    <div class="item-header">
+                        <h3 class="item-title">UI/UX Designer</h3>
+                        <div class="item-date">2015 - 2017</div>
+                    </div>
+                    <div class="item-subtitle">Digital Agency, Austin, TX</div>
+                    <p class="item-description">
+                        Created visual designs and user interfaces for various client projects. Participated in brainstorming 
+                        sessions and design sprints. Developed style guides and component libraries to ensure design consistency. 
+                        Contributed to winning 3 industry design awards for client projects.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Education -->
+            <section class="section">
+                <h2 class="section-title">Education</h2>
+                
+                <div class="item">
+                    <div class="item-header">
+                        <h3 class="item-title">MFA in Design</h3>
+                        <div class="item-date">2013 - 2015</div>
+                    </div>
+                    <div class="item-subtitle">Rhode Island School of Design</div>
+                    <p class="item-description">
+                        Focused on interaction design and human-computer interaction. Thesis project on accessibility in mobile applications.
+                    </p>
+                </div>
+
+                <div class="item">
+                    <div class="item-header">
+                        <h3 class="item-title">BFA in Graphic Design</h3>
+                        <div class="item-date">2009 - 2013</div>
+                    </div>
+                    <div class="item-subtitle">California College of the Arts</div>
+                    <p class="item-description">
+                        Graduated with honors. Minor in Psychology to better understand user behavior and decision-making processes.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Skills -->
+            <section class="section">
+                <h2 class="section-title">Skills</h2>
+                <div class="skills-container">
+                    <div class="skill">User Research</div>
+                    <div class="skill">Wireframing</div>
+                    <div class="skill">Prototyping</div>
+                    <div class="skill">Figma</div>
+                    <div class="skill">Sketch</div>
+                    <div class="skill">Adobe Creative Suite</div>
+                    <div class="skill">Design Systems</div>
+                    <div class="skill">User Testing</div>
+                    <div class="skill">Information Architecture</div>
+                    <div class="skill">HTML/CSS</div>
+                    <div class="skill">Interaction Design</div>
+                    <div class="skill">Agile Methodology</div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>References available upon request | Last updated: October 2023</p>
+        </footer>
+    </div>
+
+    <script>
+        // Simple animations on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add fade-in effect to sections when page loads
+            const sections = document.querySelectorAll('.section');
+            
+            sections.forEach((section, index) => {
+                // Add a slight delay for each section for staggered animation
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(20px)';
+                section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                
+                setTimeout(() => {
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0)';
+                }, 200 * index);
+            });
+            
+            // Add hover effect to skill tags
+            const skills = document.querySelectorAll('.skill');
+            skills.forEach(skill => {
+                skill.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px)';
+                });
+                
+                skill.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

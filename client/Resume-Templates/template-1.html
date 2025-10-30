@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegant Serif Resume</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a1a1a;
+            --accent-color: #8b6d54;
+            --light-color: #f8f5f2;
+            --text-color: #333333;
+            --light-text: #777777;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: #f9f9f9;
+            padding: 40px 20px;
+        }
+
+        .resume-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--light-color);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 60px 60px 40px;
+            background: var(--primary-color);
+            color: white;
+            position: relative;
+        }
+
+        .name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.5rem;
+            font-weight: 600;
+            letter-spacing: -1px;
+            margin-bottom: 5px;
+        }
+
+        .title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            font-size: 0.95rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .contact-label {
+            margin-right: 8px;
+            opacity: 0.8;
+        }
+
+        .section {
+            padding: 40px 60px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: var(--accent-color);
+        }
+
+        .item {
+            margin-bottom: 35px;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .item-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .item-subtitle {
+            font-size: 1rem;
+            color: var(--accent-color);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .item-date {
+            font-size: 0.95rem;
+            color: var(--light-text);
+            font-style: italic;
+        }
+
+        .item-description {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-top: 15px;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .skill {
+            background: var(--light-color);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .skill:hover {
+            background: var(--accent-color);
+            color: white;
+            transform: translateY(-2px);
+            border-color: var(--accent-color);
+        }
+
+        .footer {
+            padding: 25px 60px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--light-text);
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .header, .section, .footer {
+                padding: 40px;
+            }
+            
+            .name {
+                font-size: 2.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header, .section, .footer {
+                padding: 30px 25px;
+            }
+            
+            .name {
+                font-size: 2.2rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-container">
+        <header class="header">
+            <h1 class="name">Alexandra Chen</h1>
+            <div class="title">Creative Director & Brand Strategist</div>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span class="contact-label">📧</span>
+                    <span>alexandra.chen@example.com</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-label">📱</span>
+                    <span>+1 (555) 123-4567</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-label">🌐</span>
+                    <span>alexandrachen.design</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-label">📍</span>
+                    <span>New York, NY</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="section">
+            <h2 class="section-title">Profile</h2>
+            <p class="item-description">
+                Visionary creative director with 10+ years of experience building iconic brands for luxury clients. 
+                Specialized in creating cohesive brand experiences across digital and physical spaces. 
+                Known for elegant, minimalist design solutions that communicate sophistication and timeless appeal.
+            </p>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Experience</h2>
+            
+            <div class="item">
+                <div class="item-header">
+                    <h3 class="item-title">Creative Director</h3>
+                    <div class="item-date">2020 - Present</div>
+                </div>
+                <div class="item-subtitle">LUXE Brand Agency, New York, NY</div>
+                <p class="item-description">
+                    Lead creative vision for 15+ luxury brands in fashion, hospitality, and beauty industries. 
+                    Manage a team of 12 designers and content creators. 
+                    Clients include international luxury houses and boutique premium brands.
+                </p>
+            </div>
+
+            <div class="item">
+                <div class="item-header">
+                    <h3 class="item-title">Senior Brand Designer</h3>
+                    <div class="item-date">2016 - 2020</div>
+                </div>
+                <div class="item-subtitle">Elegance & Co., New York, NY</div>
+                <p class="item-description">
+                    Developed comprehensive brand identities for high-end clients. 
+                    Created brand guidelines, packaging systems, and digital experiences. 
+                    Increased client retention by 45% through elevated brand experiences.
+                </p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Skills</h2>
+            <div class="skills-container">
+                <div class="skill">Brand Strategy</div>
+                <div class="skill">Art Direction</div>
+                <div class="skill">Typography</div>
+                <div class="skill">Adobe Creative Suite</div>
+                <div class="skill">Figma</div>
+                <div class="skill">Creative Leadership</div>
+                <div class="skill">Packaging Design</div>
+                <div class="skill">Digital Design</div>
+                <div class="skill">Client Presentations</div>
+                <div class="skill">Trend Forecasting</div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Education</h2>
+            
+            <div class="item">
+                <div class="item-header">
+                    <h3 class="item-title">MFA in Graphic Design</h3>
+                    <div class="item-date">2014 - 2016</div>
+                </div>
+                <div class="item-subtitle">Rhode Island School of Design</div>
+                <p class="item-description">
+                    Thesis: "The Psychology of Luxury: How Design Elements Influence Perception of Value"
+                </p>
+            </div>
+
+            <div class="item">
+                <div class="item-header">
+                    <h3 class="item-title">BFA in Visual Communications</h3>
+                    <div class="item-date">2010 - 2014</div>
+                </div>
+                <div class="item-subtitle">Parsons School of Design</div>
+                <p class="item-description">
+                    Graduated with honors. Minor in Art History.
+                </p>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>References available upon request • Portfolio available at alexandrachen.design</p>
+        </footer>
+    </div>
+</body>
+</html>

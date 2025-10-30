@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
 import Sidebar from "@/components/Sidebar";
@@ -6,13 +6,40 @@ import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Code, Trophy, Clock, CheckCircle } from "lucide-react";
+import { Code, Trophy, Clock, CheckCircle, Star } from "lucide-react";
 import { useLocation } from "wouter";
 
 export default function LeetCodePage() {
   const { user } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [, setLocation] = useLocation();
+
+  let redirectPath = null;
+  if (user?.department) {
+    const dept = user.department.toLowerCase();
+    const isCodingDept = ['cs', 'it', 'cse', 'computer science', 'computer engineering', 'information technology'].includes(dept);
+    if (!isCodingDept) {
+      if (['me', 'mechanical'].includes(dept)) {
+        redirectPath = '/quiz';
+      } else if (['ee', 'electrical', 'ec', 'ece', 'electronics', 'electronics & communication'].includes(dept)) {
+        redirectPath = '/circuit';
+      } else if (['bba'].includes(dept)) {
+        redirectPath = '/stock-trading';
+      } else if (['bcom'].includes(dept)) {
+        redirectPath = '/';
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (redirectPath) {
+      setLocation(redirectPath);
+    }
+  }, [redirectPath, setLocation]);
+
+  if (redirectPath) {
+    return null;
+  }
 
   // Fetch problems
   const { data: problems = [], isLoading } = useQuery({
@@ -35,6 +62,19 @@ export default function LeetCodePage() {
       if (!res.ok) return [];
       const data = await res.json();
       return data.success ? data.data : [];
+    },
+    enabled: !!user?._id
+  });
+
+  // Fetch badge information
+  const { data: badge } = useQuery({
+    queryKey: ["/api/leetcode/badge", user?._id],
+    queryFn: async () => {
+      if (!user?._id) return null;
+      const res = await fetch('/api/leetcode/badge', { credentials: 'include' });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data.success ? data.data : null;
     },
     enabled: !!user?._id
   });
@@ -75,15 +115,25 @@ export default function LeetCodePage() {
               </p>
             </div>
             {user.role === 'faculty' || user.role === 'hod' ? (
-              <Button onClick={() => setLocation('/leetcode/create')}>
-                <Code className="mr-2 h-4 w-4" />
-                Create Problem
-              </Button>
+              <div className="flex gap-2">
+                <Button onClick={() => setLocation('/leetcode/create')}>
+                  <Code className="mr-2 h-4 w-4" />
+                  Create Problem
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setLocation('/leetcode/create?ai=1&difficulty=easy&category=Arrays')}
+                  title="Auto-generate a problem with AI"
+                >
+                  <Code className="mr-2 h-4 w-4" />
+                  Generate with AI
+                </Button>
+              </div>
             ) : null}
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Problems</CardTitle>
@@ -101,6 +151,19 @@ export default function LeetCodePage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{solvedProblems.length}</div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Your Badge</CardTitle>
+                <Star className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{badge?.level || 'Beginner'}</div>
+                <p className="text-xs text-muted-foreground">
+                  {badge?.points || 0} points
+                </p>
               </CardContent>
             </Card>
             

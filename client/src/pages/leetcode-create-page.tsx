@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Sidebar from "@/components/Sidebar";
@@ -9,9 +9,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Sparkles } from "lucide-react";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface ExampleCase {
   input: string;
@@ -30,11 +39,17 @@ export default function LeetCodeCreatePage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [aiOptions, setAiOptions] = useState({
+    difficulty: "easy",
+    category: "Arrays",
+  });
+  const [isAiDialogOpen, setIsAiDialogOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     difficulty: "easy",
+    category: "programming",
     input_format: "",
     output_format: "",
     constraints: [""],
@@ -82,6 +97,83 @@ export default function LeetCodeCreatePage() {
       });
     },
   });
+
+  const generateProblemMutation = useMutation({
+    mutationFn: async (options: { difficulty: string; category: string }) => {
+      const res = await fetch('/api/leetcode/problems/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(options),
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Failed to generate problem');
+      }
+
+      return res.json();
+    },
+    onSuccess: (data) => {
+      setFormData({
+        ...formData,
+        title: data.title || "",
+        description: data.description || "",
+        difficulty: data.difficulty || "easy",
+        input_format: data.input_format || "",
+        output_format: data.output_format || "",
+        constraints: data.constraints || [""],
+        example_cases: data.example_cases || [{ input: "", output: "", explanation: "" }],
+        test_cases: data.test_cases || [{ input: "", output: "" }],
+      });
+      toast({
+        title: "Success",
+        description: "Problem generated successfully!",
+      });
+      setIsAiDialogOpen(false);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to generate problem",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleGenerateProblem = () => {
+    generateProblemMutation.mutate(aiOptions);
+  };
+
+  // Auto-open AI dialog and trigger generation based on query params
+  useEffect(() => {
+    try {
+      const search = window.location.search;
+      if (!search) return;
+      const params = new URLSearchParams(search);
+      const ai = params.get('ai');
+      const difficultyParam = params.get('difficulty');
+      const categoryParam = params.get('category');
+
+      if (ai === '1' || ai === 'true') {
+        const nextOptions = {
+          difficulty: (difficultyParam || aiOptions.difficulty).toLowerCase(),
+          category: categoryParam || aiOptions.category,
+        };
+        setAiOptions(nextOptions);
+        setIsAiDialogOpen(true);
+        // Slight delay to ensure dialog mounts before firing mutation
+        setTimeout(() => {
+          generateProblemMutation.mutate(nextOptions);
+        }, 0);
+      }
+    } catch (err) {
+      // no-op
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({
@@ -236,11 +328,67 @@ export default function LeetCodeCreatePage() {
         />
         
         <main className="flex-1 overflow-y-auto p-6">
-          <div className="flex items-center space-x-4 mb-6">
+          <div className="flex items-center justify-between mb-6">
             <Button variant="outline" onClick={() => setLocation('/leetcode')}>
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
             </Button>
+            <Dialog open={isAiDialogOpen} onOpenChange={setIsAiDialogOpen}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Generate with AI
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Generate Problem with AI</DialogTitle>
+                  <DialogDescription>
+                    Select the difficulty and category for the problem you want to generate.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="ai-difficulty" className="text-right">
+                      Difficulty
+                    </Label>
+                    <Select
+                      value={aiOptions.difficulty}
+                      onValueChange={(value) => setAiOptions(prev => ({ ...prev, difficulty: value }))}
+                    >
+                      <SelectTrigger className="col-span-3">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="easy">Easy</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="hard">Hard</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="ai-category" className="text-right">
+                      Category
+                    </Label>
+                    <Input
+                      id="ai-category"
+                      value={aiOptions.category}
+                      onChange={(e) => setAiOptions(prev => ({ ...prev, category: e.target.value }))}
+                      className="col-span-3"
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button
+                    type="button"
+                    onClick={handleGenerateProblem}
+                    disabled={generateProblemMutation.isPending}
+                  >
+                    {generateProblemMutation.isPending ? "Generating..." : "Generate"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -270,6 +418,24 @@ export default function LeetCodeCreatePage() {
                       <SelectItem value="easy">Easy</SelectItem>
                       <SelectItem value="medium">Medium</SelectItem>
                       <SelectItem value="hard">Hard</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="category">Category</Label>
+                  <Select value={formData.category} onValueChange={(value) => handleInputChange('category', value)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="problem solving">Problem Solving</SelectItem>
+                      <SelectItem value="brainstorming">Brainstorming</SelectItem>
+                      <SelectItem value="programming">Programming</SelectItem>
+                      <SelectItem value="dsa">DSA</SelectItem>
+                      <SelectItem value="web development">Web Development</SelectItem>
+                      <SelectItem value="interview prep">Interview Prep</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

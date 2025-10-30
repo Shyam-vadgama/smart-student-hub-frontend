@@ -6,7 +6,7 @@ interface IExampleCase {
   explanation?: string;
 }
 
-interface ISolution {
+interface ISolution {   
   c?: string;
   cpp?: string;
   java?: string;
@@ -22,6 +22,7 @@ interface IProblem extends Document {
   title: string;
   description: string;
   difficulty: 'easy' | 'medium' | 'hard';
+  category: string;
   constraints: string[];
   example_cases: IExampleCase[];
   test_cases: ITestCase[];
@@ -88,6 +89,20 @@ const problemSchema = new Schema<IProblem>({
   difficulty: {
     type: String,
     enum: ["easy", "medium", "hard"],
+    required: true
+  },
+  category: {
+    type: String,
+    enum: [
+      'problem solving',
+      'brainstorming',
+      'programming',
+      'dsa',
+      'web development',
+      'interview prep',
+      'other'
+    ],
+    default: 'programming',
     required: true
   },
   constraints: {

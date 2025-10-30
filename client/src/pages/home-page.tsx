@@ -406,6 +406,14 @@ export default function HomePage() {
                         </div>
                       </div>
 
+                      <Button 
+                        variant="outline" 
+                        className="w-full mt-4"
+                        onClick={() => window.location.href = '/leetcode/create'}
+                      >
+                        Create LeetCode Problem
+                      </Button>
+
                       {recentDisplayAchievements.length === 0 ? (
                         <p className="text-muted-foreground text-center py-8">
                           No achievements found with current filters.

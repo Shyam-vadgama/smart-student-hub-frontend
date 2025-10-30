@@ -1,4 +1,4 @@
-import { User, Profile, Achievement, DynamicForm, InsertUser, InsertProfile, InsertAchievement, InsertDynamicForm, Follow, InsertFollow } from "@shared/schema";
+import { User, Profile, Achievement, DynamicForm, InsertUser, InsertProfile, InsertAchievement, InsertDynamicForm, Follow, InsertFollow, College, InsertCollege } from "@shared/schema";
 import bcrypt from 'bcryptjs';
 import { MongoStorage } from './mongoStorage';
 
@@ -43,6 +43,11 @@ export interface IStorage {
   getFollowers(userId: string): Promise<User[]>;
   getFollowing(userId: string): Promise<User[]>;
   isFollowing(followerId: string, followingId: string): Promise<boolean>;
+
+  // College methods
+  createCollege(college: InsertCollege): Promise<College>;
+  getColleges(): Promise<College[]>;
+  getCollege(id: string): Promise<College | null>;
 }
 
 // Export the MongoDB storage instance instead of the in-memory storage

@@ -129,6 +129,23 @@ export const profileApi = {
   }
 };
 
+// Resume API
+export const resumeApi = {
+  list: async () => {
+    const res = await fetch('/api/resumes', { credentials: 'include' });
+    if (!res.ok) throw new Error('Failed to fetch resumes');
+    return res.json();
+  },
+  save: async (payload: any) => {
+    const res = await apiRequest('POST', '/api/resumes', payload);
+    return res.json();
+  },
+  suggest: async (payload: any) => {
+    const res = await apiRequest('POST', '/api/resumes/suggest', payload);
+    return res.json();
+  }
+};
+
 // Follow API
 export const followApi = {
   followUser: async (userId: string) => {

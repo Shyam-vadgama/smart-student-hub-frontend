@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { Redirect } from "wouter";
+import { Redirect, Link } from "wouter"; // Added Link import
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +16,8 @@ export default function AuthPage() {
     name: "",
     email: "",
     password: "",
-    role: "student" as 'student' | 'faculty' | 'hod'
+    role: "student" as 'student' | 'faculty' | 'hod',
+    department: ""
   });
 
   if (user) {
@@ -96,6 +97,11 @@ export default function AuthPage() {
                     >
                       {loginMutation.isPending ? "Signing in..." : "Sign In"}
                     </Button>
+                    <div className="text-center mt-4">
+                      <Link to="/forgot-password" className="text-sm text-blue-600 hover:underline">
+                        Forgot Password?
+                      </Link>
+                    </div>
                   </form>
                 </CardContent>
               </Card>
@@ -122,6 +128,24 @@ export default function AuthPage() {
                         required
                         data-testid="input-register-name"
                       />
+                    </div>
+                    <div>
+                      <Label htmlFor="register-department">Department</Label>
+                      <Select value={registerData.department} onValueChange={(v) => setRegisterData({ ...registerData, department: v })}>
+                        <SelectTrigger id="register-department">
+                          <SelectValue placeholder="Select your department" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="cs">CS</SelectItem>
+                          <SelectItem value="it">IT</SelectItem>
+                          <SelectItem value="cse">CSE</SelectItem>
+                          <SelectItem value="me">Mechanical</SelectItem>
+                          <SelectItem value="ee">Electrical</SelectItem>
+                          <SelectItem value="ec">Electronics & Communication</SelectItem>
+                          <SelectItem value="bba">BBA</SelectItem>
+                          <SelectItem value="bcom">B.Com</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <Label htmlFor="register-email">Email</Label>

@@ -45,3 +45,11 @@ export const formUpload = multer({
     fileSize: 100 * 1024 * 1024 // 100MB limit
   }
 }).any();
+
+export const uploadAchievementFiles = multer({
+  // Use disk storage for testing/local development so files are saved under /uploads
+  storage: storage,
+}).fields([
+  { name: 'certificate', maxCount: 1 },
+  { name: 'media', maxCount: 5 },
+]);

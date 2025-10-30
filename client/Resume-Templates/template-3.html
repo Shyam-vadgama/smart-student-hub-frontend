@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxury Two-Tone Resume</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2a3f54;
+            --secondary-color: #f9f7f4;
+            --accent-color: #b79468; /* Gold */
+            --light-color: #ffffff;
+            --text-color: #2a3f54;
+            --light-text: #7a7a7a;
+            --border-color: #eaeaea;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: #f5f5f5;
+            padding: 50px 20px;
+        }
+
+        .resume-container {
+            max-width: 820px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 15px 50px rgba(42, 63, 84, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Decorative elements */
+        .resume-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: var(--accent-color);
+        }
+
+        .header {
+            padding: 70px 60px 50px;
+            background: var(--secondary-color);
+            position: relative;
+            text-align: center;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .name {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 3.2rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+
+        .name::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background: var(--accent-color);
+            margin: 15px auto 25px;
+        }
+
+        .title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: var(--primary-color);
+            margin-bottom: 35px;
+            font-style: italic;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 35px;
+            font-size: 0.95rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding: 0 15px;
+        }
+
+        .contact-item::before {
+            content: '•';
+            color: var(--accent-color);
+            margin-right: 10px;
+            font-size: 1.4rem;
+        }
+
+        .main-content {
+            padding: 50px 60px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            position: relative;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 35px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .item {
+            margin-bottom: 40px;
+            padding: 5px 0;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            align-items: baseline;
+        }
+
+        .item-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .item-subtitle {
+            font-size: 1.05rem;
+            color: var(--accent-color);
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .item-date {
+            font-size: 0.95rem;
+            color: var(--light-text);
+            font-weight: 500;
+            background: rgba(183, 148, 104, 0.1);
+            padding: 4px 15px;
+            border-radius: 20px;
+        }
+
+        .item-description {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            margin-top: 18px;
+            color: var(--text-color);
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .skill-category {
+            flex: 1 1 300px;
+            margin-bottom: 25px;
+        }
+
+        .skill-category-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .skill-tag {
+            background: var(--secondary-color);
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .skill-tag:hover {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(183, 148, 104, 0.2);
+        }
+
+        .awards-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .award-item {
+            padding: 20px;
+            background: var(--secondary-color);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .award-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+
+        .award-issuer {
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .award-date {
+            font-size: 0.85rem;
+            color: var(--light-text);
+            font-style: italic;
+        }
+
+        .footer {
+            padding: 30px 60px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--light-text);
+            border-top: 1px solid var(--border-color);
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .header, .main-content, .footer {
+                padding: 40px;
+            }
+            
+            .name {
+                font-size: 2.6rem;
+            }
+            
+            .awards-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header, .main-content, .footer {
+                padding: 30px 25px;
+            }
+            
+            .name {
+                font-size: 2.2rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .contact-info {
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-container">
+        <header class="header">
+            <h1 class="name">Eleanor Whitmore</h1>
+            <div class="title">Creative Director & Brand Strategist</div>
+            <div class="contact-info">
+                <div class="contact-item">eleanor.whitmore@example.com</div>
+                <div class="contact-item">+1 (555) 234-5678</div>
+                <div class="contact-item">eleanorwhitmore.com</div>
+                <div class="contact-item">New York, NY</div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section class="section">
+                <h2 class="section-title">Professional Profile</h2>
+                <p class="item-description">
+                    Award-winning creative director with 12+ years of experience crafting elevated brand experiences for luxury clients in fashion, hospitality, and beauty. 
+                    Known for a refined aesthetic that blends timeless elegance with contemporary sensibilities. 
+                    Expert in creating cohesive brand ecosystems across digital, print, and environmental touchpoints.
+                </p>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Professional Experience</h2>
+                
+                <div class="item">
+                    <div class="item-header">
+                        <h3 class="item-title">Creative Director</h3>
+                        <div class="item-date">2019 - Present</div>
+                    </div>
+                    <div class="item-subtitle">Haute & Co. Luxury Agency, New York, NY</div>
+                    <p class="item-description">
+                        Lead creative vision for 20+ luxury brands with collective revenue of $500M+. 
+                        Manage a team of 15 creatives across design, copy, and digital production. 
+                        Developed brand strategies that increased client market share by an average of 28%.
+                    </p>
+                </div>
+
+                <div class="item">
+                    <div class="item-header">
+                        <h3 class="item-title">Associate Creative Director</h3>
+                        <div class="item-date">2015 - 2019</div>
+                    </div>
+                    <div class="item-subtitle">The Design Atelier, New York, NY</div>
+                    <p class="item-description">
+                        Directed creative for premium fashion and beauty brands. 
+                        Conceptualized and executed award-winning campaigns across digital and print. 
+                        Implemented design thinking workshops that improved client collaboration and accelerated project timelines by 35%.
+                    </p>
+                </div>
+
+                <div class="item">
+                    <div class="item-header">
+                        <h3 class="item-title">Senior Art Director</h3>
+                        <div class="item-date">2012 - 2015</div>
+                    </div>
+                    <div class="item-subtitle">Prestige Branding Group, Boston, MA</div>
+                    <p class="item-description">
+                        Led visual direction for luxury hospitality and real estate clients. 
+                        Created comprehensive brand identity systems including logos, typography, and visual language. 
+                        Clients included international hotel chains and luxury residential developments.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Skills & Expertise</h2>
+                
+                <div class="skill-category">
+                    <div class="skill-category-title">Creative Direction</div>
+                    <div class="skill-tags">
+                        <div class="skill-tag">Brand Strategy</div>
+                        <div class="skill-tag">Art Direction</div>
+                        <div class="skill-tag">Creative Leadership</div>
+                        <div class="skill-tag">Design Systems</div>
+                        <div class="skill-tag">Campaign Development</div>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <div class="skill-category-title">Design & Production</div>
+                    <div class="skill-tags">
+                        <div class="skill-tag">Adobe Creative Suite</div>
+                        <div class="skill-tag">Typography</div>
+                        <div class="skill-tag">Layout Design</div>
+                        <div class="skill-tag">Packaging Design</div>
+                        <div class="skill-tag">Digital Design</div>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <div class="skill-category-title">Client & Team Management</div>
+                    <div class="skill-tags">
+                        <div class="skill-tag">Client Presentations</div>
+                        <div class="skill-tag">Team Leadership</div>
+                        <div class="skill-tag">Project Management</div>
+                        <div class="skill-tag">Budget Management</div>
+                        <div class="skill-tag">Mentorship</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Education</h2>
+                
+                <div class="item">
+                    <div class="item-header">
+                        <h3 class="item-title">MFA in Graphic Design</h3>
+                        <div class="item-date">2010 - 2012</div>
+                    </div>
+                    <div class="item-subtitle">Yale School of Art</div>
+                    <p class="item-description">
+                        Thesis: "The Semiotics of Luxury: How Visual Language Communicates Value and Exclusivity"
+                    </p>
+                </div>
+
+                <div class="item">
+                    <div class="item-header">
+                        <h3 class="item-title">BFA in Visual Communications</h3>
+                        <div class="item-date">2006 - 2010</div>
+                    </div>
+                    <div class="item-subtitle">Rhode Island School of Design</div>
+                    <p class="item-description">
+                        Concentration in Typography and Branding. Graduated with highest honors.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Awards & Recognition</h2>
+                
+                <div class="awards-container">
+                    <div class="award-item">
+                        <div class="award-title">Design Excellence Award</div>
+                        <div class="award-issuer">AIGA</div>
+                        <div class="award-date">2022</div>
+                    </div>
+                    
+                    <div class="award-item">
+                        <div class="award-title">Best Brand Identity</div>
+                        <div class="award-issuer">Clio Awards</div>
+                        <div class="award-date">2021</div>
+                    </div>
+                    
+                    <div class="award-item">
+                        <div class="award-title">Creative Director of the Year</div>
+                        <div class="award-issuer">The One Club</div>
+                        <div class="award-date">2020</div>
+                    </div>
+                    
+                    <div class="award-item">
+                        <div class="award-title">Gold Award for Packaging</div>
+                        <div class="award-issuer">Pentawards</div>
+                        <div class="award-date">2019</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>Portfolio available upon request • References provided upon request</p>
+        </footer>
+    </div>
+</body>
+</html>

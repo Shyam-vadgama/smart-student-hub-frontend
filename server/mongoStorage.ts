@@ -7,6 +7,7 @@ import AchievementModel from './models/Achievement';
 import DynamicFormModel from './models/DynamicForm';
 import mongoose from 'mongoose';
 import FollowModel from './models/Follow';
+import CollegeModel from './models/College';
 
 export class MongoStorage implements IStorage {
   // User methods
@@ -21,6 +22,7 @@ export class MongoStorage implements IStorage {
         email: user.email,
         password: user.password,
         role: user.role as 'student' | 'faculty' | 'hod',
+        department: (user as any).department,
         profile: user.profile ? user.profile.toString() : undefined,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt
@@ -42,6 +44,7 @@ export class MongoStorage implements IStorage {
         email: user.email,
         password: user.password,
         role: user.role as 'student' | 'faculty' | 'hod',
+        department: (user as any).department,
         profile: user.profile ? user.profile.toString() : undefined,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt
@@ -67,7 +70,9 @@ export class MongoStorage implements IStorage {
         name: newUser.name,
         email: newUser.email,
         password: newUser.password,
-        role: newUser.role as 'student' | 'faculty' | 'hod',
+        role: newUser.role as 'student' | 'faculty' | 'hod' | 'principal' | 'shiksan_mantri',
+        department: (newUser as any).department,
+        college: (newUser as any).college,
         createdAt: newUser.createdAt,
         updatedAt: newUser.updatedAt
       };
@@ -93,6 +98,7 @@ export class MongoStorage implements IStorage {
         email: user.email,
         password: user.password,
         role: user.role as 'student' | 'faculty' | 'hod',
+        department: (user as any).department,
         profile: user.profile ? user.profile.toString() : undefined,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt
@@ -112,6 +118,7 @@ export class MongoStorage implements IStorage {
         email: user.email,
         password: user.password,
         role: user.role as 'student' | 'faculty' | 'hod',
+        department: (user as any).department,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt
       }));
@@ -851,6 +858,60 @@ export class MongoStorage implements IStorage {
     } catch (error) {
       console.error('Error checking follow status:', error);
       return false;
+    }
+  }
+
+  // College methods
+  async createCollege(college: InsertCollege): Promise<College> {
+    try {
+      const newCollege = new CollegeModel(college);
+      await newCollege.save();
+      return {
+        _id: newCollege._id.toString(),
+        name: newCollege.name,
+        address: newCollege.address,
+        principal: newCollege.principal.toString(),
+        createdAt: newCollege.createdAt,
+        updatedAt: newCollege.updatedAt,
+      };
+    } catch (error) {
+      console.error('Error creating college:', error);
+      throw error;
+    }
+  }
+
+  async getColleges(): Promise<College[]> {
+    try {
+      const colleges = await CollegeModel.find({});
+      return colleges.map(college => ({
+        _id: college._id.toString(),
+        name: college.name,
+        address: college.address,
+        principal: college.principal.toString(),
+        createdAt: college.createdAt,
+        updatedAt: college.updatedAt,
+      }));
+    } catch (error) {
+      console.error('Error getting colleges:', error);
+      return [];
+    }
+  }
+
+  async getCollege(id: string): Promise<College | null> {
+    try {
+      const college = await CollegeModel.findById(id);
+      if (!college) return null;
+      return {
+        _id: college._id.toString(),
+        name: college.name,
+        address: college.address,
+        principal: college.principal.toString(),
+        createdAt: college.createdAt,
+        updatedAt: college.updatedAt,
+      };
+    } catch (error) {
+      console.error('Error getting college:', error);
+      return null;
     }
   }
 }

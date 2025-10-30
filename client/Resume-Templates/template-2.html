@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Geometric Resume</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0f0f0f;
+            --secondary-color: #2d2d2d;
+            --accent-color: #e0e0e0;
+            --light-color: #ffffff;
+            --text-color: #1a1a1a;
+            --light-text: #666666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--light-color);
+            padding: 60px 20px;
+        }
+
+        .resume-container {
+            max-width: 850px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            background: white;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--primary-color);
+            color: white;
+            padding: 50px 40px;
+            position: relative;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -50px;
+            width: 100px;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 50%, var(--primary-color) 50%);
+        }
+
+        .name {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 5px;
+            line-height: 1.2;
+        }
+
+        .title {
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 40px;
+            font-style: normal;
+        }
+
+        .contact-info {
+            margin-bottom: 40px;
+        }
+
+        .contact-section-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .contact-icon {
+            min-width: 24px;
+            margin-right: 12px;
+            opacity: 0.7;
+        }
+
+        .skills-container {
+            margin-bottom: 40px;
+        }
+
+        .skill-category {
+            margin-bottom: 20px;
+        }
+
+        .skill-category-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            opacity: 0.7;
+        }
+
+        .skill-list {
+            list-style: none;
+        }
+
+        .skill-item {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .skill-item::before {
+            content: '—';
+            position: absolute;
+            left: 0;
+            opacity: 0.5;
+        }
+
+        .languages-container {
+            margin-bottom: 40px;
+        }
+
+        .language-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .language-name {
+            opacity: 0.9;
+        }
+
+        .language-level {
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 50px 50px 50px 70px;
+        }
+
+        .section {
+            margin-bottom: 45px;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--accent-color);
+        }
+
+        .item {
+            margin-bottom: 35px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-color);
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .item-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .item-subtitle {
+            font-size: 1rem;
+            color: var(--secondary-color);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .item-date {
+            font-size: 0.9rem;
+            color: var(--light-text);
+        }
+
+        .item-description {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-top: 15px;
+            padding-left: 10px;
+        }
+
+        .interests-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .interest {
+            background: var(--accent-color);
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 900px) {
+            .resume-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar::before {
+                display: none;
+            }
+            
+            .main-content {
+                padding: 30px 40px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 30px 15px;
+            }
+            
+            .sidebar, .main-content {
+                padding: 30px 25px;
+            }
+            
+            .name {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h1 class="name">Marcus Johnson</h1>
+            <div class="title">Senior UX Architect</div>
+            
+            <div class="contact-info">
+                <div class="contact-section-title">Contact</div>
+                <div class="contact-item">
+                    <div class="contact-icon">📧</div>
+                    <div>marcus.johnson@example.com</div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">📱</div>
+                    <div>+1 (555) 987-6543</div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">🔗</div>
+                    <div>marcusjohnson.design</div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">📍</div>
+                    <div>San Francisco, CA</div>
+                </div>
+            </div>
+            
+            <div class="skills-container">
+                <div class="skill-category">
+                    <div class="skill-category-title">Technical</div>
+                    <ul class="skill-list">
+                        <li class="skill-item">User Research</li>
+                        <li class="skill-item">Information Architecture</li>
+                        <li class="skill-item">Interaction Design</li>
+                        <li class="skill-item">Prototyping</li>
+                        <li class="skill-item">Usability Testing</li>
+                        <li class="skill-item">Design Systems</li>
+                    </ul>
+                </div>
+                
+                <div class="skill-category">
+                    <div class="skill-category-title">Tools</div>
+                    <ul class="skill-list">
+                        <li class="skill-item">Figma</li>
+                        <li class="skill-item">Sketch</li>
+                        <li class="skill-item">Adobe XD</li>
+                        <li class="skill-item">InVision</li>
+                        <li class="skill-item">Miro</li>
+                        <li class="skill-item">Notion</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="languages-container">
+                <div class="skill-category-title">Languages</div>
+                <div class="language-item">
+                    <div class="language-name">English</div>
+                    <div class="language-level">Native</div>
+                </div>
+                <div class="language-item">
+                    <div class="language-name">Spanish</div>
+                    <div class="language-level">Professional</div>
+                </div>
+                <div class="language-item">
+                    <div class="language-name">Japanese</div>
+                    <div class="language-level">Conversational</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <section class="section">
+                <h2 class="section-title">Profile</h2>
+                <p class="item-description">
+                    Strategic UX architect with 8+ years of experience designing complex digital products for Fortune 500 companies. 
+                    Passionate about creating intuitive, accessible experiences that solve real user problems. 
+                    Strong advocate for user-centered design processes and design system thinking.
+                </p>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Experience</h2>
+                
+                <div class="item">
+                    <div class="item-header">
+                        <h3 class="item-title">Senior UX Architect</h3>
+                        <div class="item-date">2020 - Present</div>
+                    </div>
+                    <div class="item-subtitle">Innovate Tech, San Francisco, CA</div>
+                    <p class="item-description">
+                        Lead UX strategy for enterprise SaaS platform with 2M+ users. 
+                        Collaborate with product and engineering teams to define product vision. 
+                        Established company-wide design system adopted by 25+ product teams.
+                    </p>
+                </div>
+
+                <div class="item">
+                    <div class="item-header">
+                        <h3 class="item-title">UX Designer</h3>
+                        <div class="item-date">2017 - 2020</div>
+                    </div>
+                    <div class="item-subtitle">Digital Solutions, Seattle, WA</div>
+                    <p class="item-description">
+                        Designed user experiences for fintech and healthcare applications. 
+                        Conducted user research and usability testing to inform design decisions. 
+                        Improved key user flows, resulting in 35% increase in conversion rates.
+                    </p>
+                </div>
+
+                <div class="item">
+                    <div class="item-header">
+                        <h3 class="item-title">UI/UX Designer</h3>
+                        <div class="item-date">2015 - 2017</div>
+                    </div>
+                    <div class="item-subtitle">Creative Agency, Portland, OR</div>
+                    <p class="item-description">
+                        Created interfaces for web and mobile applications across various industries. 
+                        Worked closely with developers to ensure high-quality implementation. 
+                        Contributed to award-winning projects recognized by Awwwards and CSS Design Awards.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Education</h2>
+                
+                <div class="item">
+                    <div class="item-header">
+                        <h3 class="item-title">MS in Human-Computer Interaction</h3>
+                        <div class="item-date">2013 - 2015</div>
+                    </div>
+                    <div class="item-subtitle">Carnegie Mellon University</div>
+                    <p class="item-description">
+                        Focused on user research methodologies and interaction design. 
+                        Thesis project on accessibility in enterprise software.
+                    </p>
+                </div>
+
+                <div class="item">
+                    <div class="item-header">
+                        <h3 class="item-title">BS in Computer Science</h3>
+                        <div class="item-date">2009 - 2013</div>
+                    </div>
+                    <div class="item-subtitle">University of Washington</div>
+                    <p class="item-description">
+                        Minor in Visual Design. Graduated magna cum laude.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Interests</h2>
+                <div class="interests-container">
+                    <div class="interest">Photography</div>
+                    <div class="interest">Hiking</div>
+                    <div class="interest">Coffee</div>
+                    <div class="interest">Typography</div>
+                    <div class="interest">Travel</div>
+                    <div class="interest">Minimalism</div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

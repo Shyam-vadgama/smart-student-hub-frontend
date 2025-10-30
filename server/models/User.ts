@@ -23,14 +23,24 @@ const userSchema = new Schema<UserDocument>({
   },
   role: {
     type: String,
-    enum: ['student', 'faculty', 'hod'],
+    enum: ['student', 'faculty', 'hod', 'principal', 'shiksan_mantri'],
     default: 'student',
     required: true
+  },
+  department: {
+    type: String,
+    trim: true
   },
   profile: {
     type: Schema.Types.ObjectId,
     ref: 'Profile'
-  }
+  },
+  college: {
+    type: Schema.Types.ObjectId,
+    ref: 'College'
+  },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date
 }, {
   timestamps: true
 });

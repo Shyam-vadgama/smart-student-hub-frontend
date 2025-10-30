@@ -8,8 +8,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Code, ArrowLeft, Play, CheckCircle } from "lucide-react";
+import Editor from "@monaco-editor/react";
+import { Code, ArrowLeft, Play, CheckCircle, Star } from "lucide-react";
 import { useLocation } from "wouter";
+
+const BadgeAnimation = ({ level, onAnimationEnd }) => {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-background p-8 rounded-lg shadow-lg text-center animate-bounce">
+        <h2 className="text-2xl font-bold mb-4">Congratulations!</h2>
+        <p className="text-lg mb-4">You have achieved the {level} badge!</p>
+        <Star className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
+        <Button onClick={onAnimationEnd}>Continue</Button>
+      </div>
+    </div>
+  );
+};
 
 export default function LeetCodeProblemPage() {
   const { user } = useAuth();
@@ -27,6 +41,33 @@ function solution() {
   const [language, setLanguage] = useState('javascript');
   const [isRunning, setIsRunning] = useState(false);
   const [output, setOutput] = useState('');
+  const [showBadgeAnimation, setShowBadgeAnimation] = useState(false);
+  const [newBadgeLevel, setNewBadgeLevel] = useState('');
+
+  // Redirect if user is not a student
+  if (user?.role !== 'student') {
+    return (
+      <div className="flex h-screen bg-background">
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <Header
+            title="Permission Denied"
+            onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+          />
+          <main className="flex-1 overflow-y-auto p-6">
+            <div className="text-center py-12">
+              <h3 className="text-lg font-medium text-foreground mb-2">Access Denied</h3>
+              <p className="text-muted-foreground mb-4">Only students can access this page to solve problems.</p>
+              <Button onClick={() => setLocation('/leetcode')}> 
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Go to Dashboard
+              </Button>
+            </div>
+          </main>
+        </div>
+      </div>
+    );
+  }
 
   // Fetch problem details
   const { data: problem, isLoading } = useQuery({
@@ -53,23 +94,63 @@ function solution() {
   const handleRunCode = async () => {
     setIsRunning(true);
     setOutput('Running your code...');
-    
-    // Simulate code execution
-    setTimeout(() => {
-      setOutput('Code executed successfully!\nOutput: Hello World');
+    try {
+      const res = await fetch(`/api/leetcode/submissions/${problemId}/run`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ code, language })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        const lines = data.results.map((r: any, idx: number) => {
+          const status = r.passed ? 'PASSED' : 'FAILED';
+          return `#${idx + 1} ${status}\nInput:\n${r.input}\nExpected:\n${r.expectedOutput}\nActual:\n${r.actualOutput}`;
+        });
+        setOutput(lines.join('\n\n'));
+      } else {
+        setOutput(`Run failed: ${data.message || 'Unknown error'}`);
+      }
+    } catch (e) {
+      setOutput('An error occurred while running your code.');
+    } finally {
       setIsRunning(false);
-    }, 2000);
+    }
   };
 
   const handleSubmitCode = async () => {
     setIsRunning(true);
     setOutput('Submitting your solution...');
-    
-    // Simulate submission
-    setTimeout(() => {
-      setOutput('Solution submitted successfully!\nAll test cases passed!');
+
+    try {
+      const res = await fetch(`/api/leetcode/submissions/${problemId}/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code, language }),
+        credentials: 'include',
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setOutput('Solution submitted successfully!\nAll test cases passed!');
+        if (data.badge && data.badge.levelUp) {
+          setNewBadgeLevel(data.badge.level);
+          setShowBadgeAnimation(true);
+        }
+      } else {
+        const details = Array.isArray(data.results)
+          ? data.results.map((r: any, idx: number) => `#${idx + 1} ${r.passed ? 'PASSED' : 'FAILED'}\nInput:\n${r.input}\nExpected:\n${r.expectedOutput}\nActual:\n${r.actualOutput}`).join('\n\n')
+          : '';
+        setOutput(`Submission failed: ${data.message}${details ? '\n\n' + details : ''}`);
+      }
+    } catch (error) {
+      setOutput('An error occurred while submitting your solution.');
+    } finally {
       setIsRunning(false);
-    }, 3000);
+    }
   };
 
   if (!user) return null;
@@ -79,9 +160,9 @@ function solution() {
       <div className="flex h-screen bg-background">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         <div className="flex-1 flex flex-col overflow-hidden">
-          <Header 
-            title="Loading..." 
-            onMenuClick={() => setSidebarOpen(!sidebarOpen)} 
+          <Header
+            title="Loading..."
+            onMenuClick={() => setSidebarOpen(!sidebarOpen)}
           />
           <main className="flex-1 overflow-y-auto p-6">
             <div className="space-y-4">
@@ -100,15 +181,15 @@ function solution() {
       <div className="flex h-screen bg-background">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         <div className="flex-1 flex flex-col overflow-hidden">
-          <Header 
-            title="Problem Not Found" 
-            onMenuClick={() => setSidebarOpen(!sidebarOpen)} 
+          <Header
+            title="Problem Not Found"
+            onMenuClick={() => setSidebarOpen(!sidebarOpen)}
           />
           <main className="flex-1 overflow-y-auto p-6">
             <div className="text-center py-12">
               <h3 className="text-lg font-medium text-foreground mb-2">Problem not found</h3>
               <p className="text-muted-foreground mb-4">The problem you're looking for doesn't exist.</p>
-              <Button onClick={() => setLocation('/leetcode')}>
+              <Button onClick={() => setLocation('/leetcode')}> 
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Problems
               </Button>
@@ -121,23 +202,27 @@ function solution() {
 
   return (
     <div className="flex h-screen bg-background">
+      {showBadgeAnimation && <BadgeAnimation level={newBadgeLevel} onAnimationEnd={() => setShowBadgeAnimation(false)} />} 
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      
+
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header 
-          title={problem.title} 
-          onMenuClick={() => setSidebarOpen(!sidebarOpen)} 
+        <Header
+          title={problem.title}
+          onMenuClick={() => setSidebarOpen(!sidebarOpen)}
         />
-        
+
         <main className="flex-1 overflow-y-auto p-6">
           <div className="flex items-center space-x-4 mb-6">
-            <Button variant="outline" onClick={() => setLocation('/leetcode')}>
+            <Button variant="outline" onClick={() => setLocation('/leetcode')}> 
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
             </Button>
             <Badge className={getDifficultyColor(problem.difficulty)}>
               {problem.difficulty}
             </Badge>
+            {problem.category && (
+              <Badge variant="outline">{problem.category}</Badge>
+            )}
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -151,17 +236,17 @@ function solution() {
                   <div className="prose prose-sm max-w-none">
                     <p>{problem.description}</p>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-medium mb-2">Input Format:</h4>
                     <pre className="bg-muted p-3 rounded text-sm">{problem.input_format}</pre>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-medium mb-2">Output Format:</h4>
                     <pre className="bg-muted p-3 rounded text-sm">{problem.output_format}</pre>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-medium mb-2">Constraints:</h4>
                     <ul className="list-disc list-inside space-y-1">
@@ -210,8 +295,8 @@ function solution() {
                   <div className="flex items-center justify-between">
                     <CardTitle>Code Editor</CardTitle>
                     <div className="flex items-center space-x-2">
-                      <select 
-                        value={language} 
+                      <select
+                        value={language}
                         onChange={(e) => setLanguage(e.target.value)}
                         className="px-3 py-1 border rounded text-sm"
                       >
@@ -224,29 +309,36 @@ function solution() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <textarea
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
-                    className="w-full h-64 p-4 border rounded font-mono text-sm bg-background"
-                    placeholder="Write your solution here..."
-                  />
-                  
+                  <div className="h-80 border rounded">
+                    <Editor
+                      height="100%"
+                      defaultLanguage={language === 'cpp' ? 'cpp' : language}
+                      language={language === 'cpp' ? 'cpp' : language}
+                      value={code}
+                      onChange={(val) => setCode(val || '')}
+                      theme="vs-dark"
+                      options={{ fontSize: 14, minimap: { enabled: false } }}
+                    />
+                  </div>
+
                   <div className="flex items-center space-x-2 mt-4">
-                    <Button 
-                      onClick={handleRunCode} 
+                    <Button
+                      onClick={handleRunCode}
                       disabled={isRunning}
                       variant="outline"
                     >
                       <Play className="mr-2 h-4 w-4" />
                       Run Code
                     </Button>
-                    <Button 
-                      onClick={handleSubmitCode} 
-                      disabled={isRunning}
-                    >
-                      <CheckCircle className="mr-2 h-4 w-4" />
-                      Submit
-                    </Button>
+                    {user.role === 'student' && (
+                      <Button
+                        onClick={handleSubmitCode}
+                        disabled={isRunning}
+                      >
+                        <CheckCircle className="mr-2 h-4 w-4" />
+                        Submit
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>

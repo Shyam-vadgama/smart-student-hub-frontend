@@ -25,3 +25,20 @@ export const checkOwnership = (req: AuthRequest, res: Response, next: NextFuncti
   }
   next();
 };
+
+// Guard features by allowed departments. Accepts array of normalized dept slugs.
+export const checkDepartment = (allowedDepartments: string[]) => {
+  return (req: AuthRequest, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Authentication required' });
+    }
+
+    const department = (req.user as any)?.department;
+    const normalized = typeof department === 'string' ? department.toLowerCase() : '';
+    if (!normalized || !allowedDepartments.includes(normalized)) {
+      return res.status(403).json({ message: 'Access denied: department not allowed' });
+    }
+
+    next();
+  };
+};

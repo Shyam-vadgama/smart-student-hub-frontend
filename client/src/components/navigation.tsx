@@ -23,6 +23,17 @@ export function Navigation() {
     { href: "/jobs", icon: Briefcase, label: "Jobs" },
     { href: "/messaging", icon: MessageCircle, label: "Messaging" },
   ]
+  // Append department shortcut if available
+  if ((currentUser as any)?.department) {
+    const dept = (currentUser as any).department.toLowerCase()
+    if (["cs","it","cse","computer science","computer engineering","information technology"].includes(dept)) {
+      navItems.push({ href: "/leetcode", icon: Briefcase, label: "LeetCode" })
+    } else if (["me","mechanical"].includes(dept)) {
+      navItems.push({ href: "/quiz", icon: Briefcase, label: "Quiz" })
+    } else if (["ee","electrical","ec","ece","electronics","electronics & communication"].includes(dept)) {
+      navItems.push({ href: "/circuit", icon: Briefcase, label: "Circuit" })
+    }
+  }
 
   return (
     <nav className="sticky top-0 z-50 bg-background border-b border-border">

@@ -1,13 +1,20 @@
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Load environment variables BEFORE any other imports that might use them
+dotenv.config({ path: path.resolve(process.cwd(), 'server', '.env') });
+
+console.log('Cloudinary Config Check:');
+console.log('CLOUDINARY_CLOUD_NAME:', process.env.CLOUDINARY_CLOUD_NAME);
+console.log('CLOUDINARY_API_KEY:', process.env.CLOUDINARY_API_KEY);
+console.log('CLOUDINARY_API_SECRET:', process.env.CLOUDINARY_API_SECRET);
+
 import express, { type Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { connectDB } from "./db";
-import dotenv from 'dotenv';
-import path from 'path';
-
-// Load environment variables
-dotenv.config({ path: path.resolve(process.cwd(), 'server', '.env') });
+import { sendMail } from './utils/mailer';
 
 const app = express();
 app.use(express.json());
@@ -71,7 +78,7 @@ app.use((req, res, next) => {
   // Other ports are firewalled. Default to 5000 if not specified.
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || '5001', 10);
+  const port = parseInt(process.env.PORT || '5000', 10);
   server.listen(port, 'localhost', () => {
   log(`Serving on http://localhost:${port}`);
 });

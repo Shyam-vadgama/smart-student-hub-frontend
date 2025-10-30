@@ -31,6 +31,6 @@ const profileSchema = new Schema<ProfileDocument>({
   timestamps: true
 });
 
-profileSchema.index({ user: 1 });
+
 
 export default mongoose.model<ProfileDocument>('Profile', profileSchema);

@@ -27,6 +27,7 @@ type RegisterData = {
   email: string;
   password: string;
   role: 'student' | 'faculty' | 'hod';
+  department?: string;
 };
 
 export const AuthContext = createContext<AuthContextType | null>(null);
